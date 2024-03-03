@@ -4,6 +4,16 @@ The yolov8 object detection
 
 This is a sample ncnn android project, it depends on ncnn library and opencv
 
+首先 pt模型导出onnx
+yolo export model=yolov8n.pt format=onnx simplify=True opset=12 half=True
+
+注意 上面后面所加的三个参数十分重要；不然识别不了并且还根本找不到问题 simplify=True opset=12 half=True 就这三个参数
+
+cd /opt/homebrew/Cellar/ncnn/20240102_2/bin/
+
+onnx2ncnn /Users/lipengjun/yolo/yolov8n.onnx /Users/lipengjun/yolo/yolov8n.param /Users/lipengjun/yolo/yolov8n.bin
+onnx2ncnn /Users/lipengjun/yolo/nanjing0303.onnx /Users/lipengjun/yolo/nanjing0303.param /Users/lipengjun/yolo/nanjing0303.bin
+
 https://github.com/Tencent/ncnn
 
 https://github.com/nihui/opencv-mobile

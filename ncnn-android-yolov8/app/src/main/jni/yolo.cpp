@@ -19,6 +19,11 @@
 
 #include "cpu.h"
 
+#include <android/log.h>
+
+//#include <opencv2/core/types.hpp>
+//#include<opencv2/freetype.hpp>
+
 static float fast_exp(float x)
 {
     union {
@@ -140,7 +145,9 @@ static void generate_grids_and_stride(const int target_w, const int target_h, st
 static void generate_proposals(std::vector<GridAndStride> grid_strides, const ncnn::Mat& pred, float prob_threshold, std::vector<Object>& objects)
 {
     const int num_points = grid_strides.size();
-    const int num_class = 80;
+    //修改为你自己的类别数量 默认是 80
+    const int num_class = 43;
+//    const int num_class = 80;
     const int reg_max_1 = 16;
 
     for (int i = 0; i < num_points; i++)
@@ -246,9 +253,9 @@ int Yolo::load(AAssetManager* mgr, const char* modeltype, int _target_size, cons
 
     char parampath[256];
     char modelpath[256];
-    sprintf(parampath, "yolov8%s.param", modeltype);
-    sprintf(modelpath, "yolov8%s.bin", modeltype);
-
+    sprintf(parampath, "%s.param", modeltype);
+    sprintf(modelpath, "%s.bin", modeltype);
+    __android_log_print(ANDROID_LOG_WARN,"LOG_TAG","%s", modelpath); // LOG类型:warning
     yolo.load_param(mgr, parampath);
     yolo.load_model(mgr, modelpath);
 
@@ -298,11 +305,14 @@ int Yolo::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_th
     ncnn::Extractor ex = yolo.create_extractor();
 
     ex.input("images", in_pad);
+//    ex.input("in0", in_pad);
 
     std::vector<Object> proposals;
     
     ncnn::Mat out;
-    ex.extract("output", out);
+//    ex.extract("output", out);
+    ex.extract("output0", out);
+//    ex.extract("out0", out);
 
     std::vector<int> strides = {8, 16, 32}; // might have stride=64
     std::vector<GridAndStride> grid_strides;
@@ -357,16 +367,34 @@ int Yolo::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_th
 int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 {
     static const char* class_names[] = {
-        "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
-        "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
-        "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
-        "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-        "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
-        "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
-        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
-        "hair drier", "toothbrush"
+            "活动扳手",  "对讲机",  "尖嘴钳",  "万用表",  "口笛",  "螺丝刀",  "钥匙",
+            "纸盒装",  "视频记录仪",  "扳手",  "卷尺",  "手机",  "双面警示器",  "微波场强仪",
+            "毛刷",  "弯弯",  "水壶",  "振电器",  "饮料瓶",  "喷壶",  "液晶显示仪",
+            "圆疙瘩",  "36mm呆扳手",  "呆扳手",  "铁棒",  "油壶","包",  "黑垫子",
+            "三角套筒扳手",  "灭火器",  "辅助电机", "开箱专用钥匙","黑体",
+             "激光瞄准器","14mm呆扳手","6mmL型内六角扳手","8mmL型内六角扳手",
+            "T型套筒","十字螺丝刀","对光架","手红旗","磁钢安装尺","铜导线"
     };
+
+//    static const char* class_names[] = {
+//            "人ceshi", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+//            "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
+//            "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
+//            "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
+//            "tennis racket", "bottle", "wine glass", "cup", "fork"
+//    };
+
+//    static const char* class_names[] = {
+//        "人ceshi", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
+//        "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
+//        "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
+//        "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
+//        "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
+//        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
+//        "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
+//        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
+//        "hair drier", "toothbrush"
+//    };
 
     static const unsigned char colors[19][3] = {
         { 54,  67, 244},
@@ -391,6 +419,8 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
     };
 
     int color_index = 0;
+// 初始化FreeType
+//    cv::freetype::FreeType2 ft;
 
     for (size_t i = 0; i < objects.size(); i++)
     {
@@ -408,7 +438,7 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
         char text[256];
         sprintf(text, "%s %.1f%%", class_names[obj.label], obj.prob * 100);
-
+        __android_log_print(ANDROID_LOG_WARN,"LOG_TAG3","%s", text); // LOG类型:warning
         int baseLine = 0;
         cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 
@@ -424,6 +454,7 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
 
         cv::putText(rgb, text, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+//        cv::putTextHusky(rgb, text, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
     }
 
     return 0;
