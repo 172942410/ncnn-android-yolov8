@@ -22,7 +22,8 @@
 #include <android/log.h>
 
 //#include <opencv2/core/types.hpp>
-//#include<opencv2/freetype.hpp>
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/freetype.hpp>
 
 static float fast_exp(float x)
 {
@@ -438,7 +439,7 @@ int Yolo::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 
         char text[256];
         sprintf(text, "%s %.1f%%", class_names[obj.label], obj.prob * 100);
-        __android_log_print(ANDROID_LOG_WARN,"LOG_TAG3","%s", text); // LOG类型:warning
+//        __android_log_print(ANDROID_LOG_WARN,"LOG_TAG3","%s", text); // LOG类型:warning
         int baseLine = 0;
         cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 

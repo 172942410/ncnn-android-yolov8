@@ -32,10 +32,12 @@ import android.widget.Spinner;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.lianyun.perry.cback.YoloModel;
+
 public class MainActivity extends Activity implements SurfaceHolder.Callback
 {
     public static final int REQUEST_CAMERA = 100;
-
+    YoloThread yoloThread;
     private Yolov8Ncnn yolov8ncnn = new Yolov8Ncnn();
     private int facing = 0;
 
@@ -120,6 +122,15 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         if (!ret_init)
         {
             Log.e("MainActivity", "yolov8ncnn loadModel failed");
+        }else{
+            //加载成功之后就可以循环回调了
+            if(yoloThread == null) {
+                yoloThread = new YoloThread();
+            }
+            if(!yoloThread.isAlive()) {
+                mStopThread = false;
+                yoloThread.start();
+            }
         }
     }
 
@@ -150,6 +161,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         }
 
         yolov8ncnn.openCamera(facing);
+        mPauseThread = false;
     }
 
     @Override
@@ -158,5 +170,41 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
         super.onPause();
 
         yolov8ncnn.closeCamera();
+        mPauseThread = true;
     }
-}
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mStopThread = true;
+    }
+
+    boolean mStopThread = false;
+    boolean mPauseThread = false;
+
+    private class YoloThread extends Thread {
+        private String TAG = YoloThread.class.getName();
+        @Override
+        public void run() {
+            do{
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if(mPauseThread){
+                    Log.d(TAG,"YoloThread 线程暂停了");
+                    continue;
+                }
+                YoloModel[] yoloModels = yolov8ncnn.getSeeStuff();
+                Log.d(TAG,"yoloModels.length = "+yoloModels.length);
+                if(yoloModels.length > 0){
+                    for(int i = 0;i<yoloModels.length;i++){
+                        Log.d(TAG,"yoloModel [" + i + "]: "+yoloModels[i]);
+                    }
+                }
+            }while (!mStopThread);
+            Log.d(TAG, "执行线程结束了");
+        }
+    }
+    }

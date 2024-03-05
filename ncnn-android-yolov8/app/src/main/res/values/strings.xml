@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">ncnn-yolov8</string>
     <string-array name="model_array">
-        <item>nanjing0303</item>
+        <item>nanjing0304</item>
         <item>yolov8n</item>
     </string-array>
     <string-array name="cpugpu_array">
