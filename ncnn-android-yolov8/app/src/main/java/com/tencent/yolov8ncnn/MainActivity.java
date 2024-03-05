@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private Spinner spinnerModel;
     private Spinner spinnerCPUGPU;
     private int current_model = 0;
+    private String currentModel;
     private int current_cpugpu = 0;
 
     private SurfaceView cameraView;
@@ -76,7 +77,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 facing = new_facing;
             }
         });
-
+        String [] modelNames = getResources().getStringArray(R.array.model_array);
+        currentModel = modelNames[0];
         spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
         spinnerModel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -85,6 +87,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 if (position != current_model)
                 {
                     current_model = position;
+                    currentModel = modelNames[current_model];
                     reload();
                 }
             }
@@ -118,7 +121,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     private void reload()
     {
-        boolean ret_init = yolov8ncnn.loadModel(getAssets(), current_model, current_cpugpu);
+        boolean ret_init = yolov8ncnn.loadModel(getAssets(), currentModel, current_cpugpu);
         if (!ret_init)
         {
             Log.e("MainActivity", "yolov8ncnn loadModel failed");

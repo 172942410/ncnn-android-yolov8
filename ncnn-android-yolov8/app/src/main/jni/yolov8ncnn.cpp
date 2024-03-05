@@ -176,8 +176,8 @@ JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
 // public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
 JNIEXPORT jboolean JNICALL
 Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobject assetManager,
-                                                 jint modelid, jint cpugpu) {
-    if (modelid < 0 || modelid > 6 || cpugpu < 0 || cpugpu > 1) {
+                                                 jstring modelName, jint cpugpu) {
+    if (cpugpu < 0 || cpugpu > 1) {
         return JNI_FALSE;
     }
 //  注意需要YoloAPI.Obj是在java层定义的，为了使用它返回结果，需要将它转换为C++层的jclass格式
@@ -194,12 +194,6 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
 
     __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "loadModel %p", mgr);
-
-    const char *modeltypes[] =
-            {
-                    "nanjing0304",
-                    "yolov8n",
-            };
 
     const int target_sizes[] =
             {
@@ -219,8 +213,8 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
                     {1 / 255.f, 1 / 255.f, 1 / 255.f},
             };
 
-    const char *modeltype = modeltypes[(int) modelid];
-    int target_size = target_sizes[(int) modelid];
+    const char *modeltype = env->GetStringUTFChars(modelName, nullptr);
+    int target_size = target_sizes[0];
     bool use_gpu = (int) cpugpu == 1;
 
     // reload
@@ -234,8 +228,7 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
         } else {
             if (!g_yolo)
                 g_yolo = new Yolo;
-            g_yolo->load(mgr, modeltype, target_size, mean_vals[(int) modelid],
-                         norm_vals[(int) modelid], use_gpu);
+            g_yolo->load(mgr, modeltype, target_size, mean_vals[0],norm_vals[0], use_gpu);
         }
     }
 

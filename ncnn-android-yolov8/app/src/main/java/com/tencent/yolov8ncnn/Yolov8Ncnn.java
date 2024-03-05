@@ -21,11 +21,39 @@ import com.lianyun.perry.cback.YoloModel;
 
 public class Yolov8Ncnn
 {
-    public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
+    public native boolean loadModel(AssetManager mgr, String modelName, int cpugpu);
     public native boolean openCamera(int facing);
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
 
+    /**
+     * 获取当前摄像头显示页面上所识别出来的物品
+     * 在java中调用可以使用线程轮训
+     * 例如：
+     *  @Override
+     *         public void run() {
+     *             do{
+     *                 try {
+     *                     Thread.sleep(200);
+     *                 } catch (InterruptedException e) {
+     *                     throw new RuntimeException(e);
+     *                 }
+     *                 if(mPauseThread){
+     *                     Log.d(TAG,"YoloThread 线程暂停了");
+     *                     continue;
+     *                 }
+     *                 YoloModel[] yoloModels = yolov8ncnn.getSeeStuff();
+     *                 Log.d(TAG,"yoloModels.length = "+yoloModels.length);
+     *                 if(yoloModels.length > 0){
+     *                     for(int i = 0;i<yoloModels.length;i++){
+     *                         Log.d(TAG,"yoloModel [" + i + "]: "+yoloModels[i]);
+     *                     }
+     *                 }
+     *             }while (!mStopThread);
+     *             Log.d(TAG, "执行线程结束了");
+     *         }
+     * @return
+     */
     public native YoloModel[] getSeeStuff();
 
 
