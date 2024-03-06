@@ -176,7 +176,7 @@ JNIEXPORT void JNI_OnUnload(JavaVM *vm, void *reserved) {
 // public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
 JNIEXPORT jboolean JNICALL
 Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobject assetManager,
-                                                 jstring modelName, jint cpugpu) {
+                                                 jstring modelName, jint cpugpu,jobjectArray stuffNames) {
     if (cpugpu < 0 || cpugpu > 1) {
         return JNI_FALSE;
     }
@@ -226,9 +226,26 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
             delete g_yolo;
             g_yolo = 0;
         } else {
-            if (!g_yolo)
+            if (!g_yolo) {
                 g_yolo = new Yolo;
-            g_yolo->load(mgr, modeltype, target_size, mean_vals[0],norm_vals[0], use_gpu);
+            }
+            jsize arrayLength = env->GetArrayLength(stuffNames);
+            std::vector<char*> cppStrings(arrayLength);
+            for (jsize i = 0; i < arrayLength; i++) {
+                jobject element = env->GetObjectArrayElement(stuffNames, i);
+//                if (element != nullptr && env->IsInstanceOf(element, env->FindClass("java/lang/String"))) {
+                    // 确保元素是 jstring 类型
+                    jstring jstr = static_cast<jstring>(element);
+                    const char* cstr = env->GetStringUTFChars(jstr, nullptr);
+                    cppStrings[i] = const_cast<char*>(cstr); // 转换为 char*
+//                __android_log_print(ANDROID_LOG_DEBUG, "ncnn_log", "cstr %s", cstr);
+//                    env->ReleaseStringUTFChars(jstr, cstr);
+//                }else{
+                    // 处理非字符串元素的情况
+//                    constCharArray[i] = nullptr;
+//                }
+            }
+            g_yolo->load(mgr, modeltype, target_size, mean_vals[0],norm_vals[0], cppStrings,use_gpu);
         }
     }
 

@@ -38,7 +38,7 @@ public:
 
     int load(const char* modeltype, int target_size, const float* mean_vals, const float* norm_vals, bool use_gpu = false);
 
-    int load(AAssetManager* mgr, const char* modeltype, int target_size, const float* mean_vals, const float* norm_vals, bool use_gpu = false);
+    int load(AAssetManager* mgr, const char* modeltype, int target_size, const float* mean_vals, const float* norm_vals,std::vector<char*> cppStrings, bool use_gpu = false);
 
     int detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_threshold = 0.4f, float nms_threshold = 0.5f);
 
@@ -51,6 +51,8 @@ private:
     float norm_vals[3];
     ncnn::UnlockedPoolAllocator blob_pool_allocator;
     ncnn::PoolAllocator workspace_pool_allocator;
+    std::vector<char*> stuffNameVector;
+    int stuff_size;
 };
 
 #endif // NANODET_H

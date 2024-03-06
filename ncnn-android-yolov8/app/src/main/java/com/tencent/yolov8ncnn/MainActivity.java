@@ -48,7 +48,15 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
     private int current_cpugpu = 0;
 
     private SurfaceView cameraView;
-
+    static  String stuffNames[] = {
+    "活动扳手",  "对讲机",  "尖嘴钳",  "万用表",  "口笛",  "螺丝刀",  "钥匙",
+            "纸盒装",  "视频记录仪",  "扳手",  "卷尺",  "手机",  "双面警示器",  "微波场强仪",
+            "毛刷",  "弯弯",  "水壶",  "振电器",  "饮料瓶",  "喷壶",  "液晶显示仪",
+            "圆疙瘩",  "36mm呆扳手",  "呆扳手",  "铁棒",  "油壶","包",  "黑垫子",
+            "三角套筒扳手",  "灭火器",  "辅助电机", "开箱专用钥匙","黑体",
+            "激光瞄准器","14mm呆扳手","6mmL型内六角扳手","8mmL型内六角扳手",
+            "T型套筒","十字螺丝刀","对光架","手红旗","磁钢安装尺","铜导线"
+};
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -121,7 +129,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
 
     private void reload()
     {
-        boolean ret_init = yolov8ncnn.loadModel(getAssets(), currentModel, current_cpugpu);
+        boolean ret_init = yolov8ncnn.loadModel(getAssets(), currentModel, current_cpugpu, stuffNames);
         if (!ret_init)
         {
             Log.e("MainActivity", "yolov8ncnn loadModel failed");
@@ -200,8 +208,9 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                     continue;
                 }
                 YoloModel[] yoloModels = yolov8ncnn.getSeeStuff();
-                Log.d(TAG,"yoloModels.length = "+yoloModels.length);
+//                Log.d(TAG,"yoloModels.length = "+yoloModels.length);
                 if(yoloModels.length > 0){
+                    Log.d(TAG,"yoloModels.length = "+yoloModels.length);
                     for(int i = 0;i<yoloModels.length;i++){
                         Log.d(TAG,"yoloModel [" + i + "]: "+yoloModels[i]);
                     }

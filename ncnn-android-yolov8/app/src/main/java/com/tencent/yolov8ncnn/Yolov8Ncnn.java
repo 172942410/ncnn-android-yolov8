@@ -21,7 +21,7 @@ import com.lianyun.perry.cback.YoloModel;
 
 public class Yolov8Ncnn
 {
-    public native boolean loadModel(AssetManager mgr, String modelName, int cpugpu);
+    public native boolean loadModel(AssetManager mgr, String modelName, int cpugpu, String[] stuffNames);
     public native boolean openCamera(int facing);
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
