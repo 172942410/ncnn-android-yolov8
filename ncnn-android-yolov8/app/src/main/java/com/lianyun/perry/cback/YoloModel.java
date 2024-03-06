@@ -12,6 +12,9 @@ public class YoloModel {
 
     public String name;
 
+    public float curFps;
+
+
     @Override
     public String toString() {
         return "YoloModel{" +
@@ -22,6 +25,7 @@ public class YoloModel {
                 ", label=" + label +
                 ", prob=" + prob +
                 ", name=" + name +
+                ", curFps=" + curFps +
                 '}';
     }
 }

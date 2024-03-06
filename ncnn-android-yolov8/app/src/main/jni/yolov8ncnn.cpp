@@ -56,9 +56,11 @@ static int draw_unsupported(cv::Mat &rgb) {
     return 0;
 }
 
+float avg_fps = 0.f;
+
 static int draw_fps(cv::Mat &rgb) {
     // resolve moving average
-    float avg_fps = 0.f;
+
     {
         static double t0 = 0.f;
         static float fps_history[10] = {0.f};
@@ -148,6 +150,7 @@ static jfieldID wId;
 static jfieldID hId;
 static jfieldID labelId;
 static jfieldID probId;
+static jfieldID curFpsId;
 static jfieldID nameId;
 // 先定义返回的数据
 std::vector<char*> cppStrings;
@@ -192,6 +195,7 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
     hId = env->GetFieldID(yoloJavaCls, "h", "F");
     labelId = env->GetFieldID(yoloJavaCls, "label", "I");
     probId = env->GetFieldID(yoloJavaCls, "prob", "F");
+    curFpsId = env->GetFieldID(yoloJavaCls, "curFps", "F");
     nameId = env->GetFieldID(yoloJavaCls, "name", "Ljava/lang/String;");
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
 
@@ -293,14 +297,16 @@ JNIEXPORT jobjectArray JNICALL
 Java_com_tencent_yolov8ncnn_Yolov8Ncnn_getSeeStuff(JNIEnv *env, jobject thiz) {
     // 在detectPicture方法中将结果保存在了 objects 中，还需继续对他进行转换
     jobjectArray jObjArray = env->NewObjectArray(objects.size(), yoloJavaCls, NULL);
+    jobject jObj = env->NewObject(yoloJavaCls, constructortorId, thiz);
+
     for (size_t i = 0; i < objects.size(); i++) {
-        jobject jObj = env->NewObject(yoloJavaCls, constructortorId, thiz);
         env->SetFloatField(jObj, xId, objects[i].rect.x);
         env->SetFloatField(jObj, yId, objects[i].rect.y);
         env->SetFloatField(jObj, wId, objects[i].rect.width);
         env->SetFloatField(jObj, hId, objects[i].rect.height);
         env->SetIntField(jObj, labelId, objects[i].label);
         env->SetFloatField(jObj, probId, objects[i].prob);
+        env->SetFloatField(jObj, curFpsId, avg_fps);
         jstring jName = env->NewStringUTF(cppStrings[i]);
         env->SetObjectField(jObj,nameId,jName);
         env->SetObjectArrayElement(jObjArray, i, jObj);
