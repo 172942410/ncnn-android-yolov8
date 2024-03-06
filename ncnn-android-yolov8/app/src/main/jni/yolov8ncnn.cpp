@@ -148,7 +148,9 @@ static jfieldID wId;
 static jfieldID hId;
 static jfieldID labelId;
 static jfieldID probId;
+static jfieldID nameId;
 // 先定义返回的数据
+std::vector<char*> cppStrings;
 
 extern "C" {
 
@@ -190,7 +192,7 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
     hId = env->GetFieldID(yoloJavaCls, "h", "F");
     labelId = env->GetFieldID(yoloJavaCls, "label", "I");
     probId = env->GetFieldID(yoloJavaCls, "prob", "F");
-
+    nameId = env->GetFieldID(yoloJavaCls, "name", "Ljava/lang/String;");
     AAssetManager *mgr = AAssetManager_fromJava(env, assetManager);
 
     __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "loadModel %p", mgr);
@@ -230,7 +232,7 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_loadModel(JNIEnv *env, jobject thiz, jobj
                 g_yolo = new Yolo;
             }
             jsize arrayLength = env->GetArrayLength(stuffNames);
-            std::vector<char*> cppStrings(arrayLength);
+            cppStrings = std::vector<char*>(arrayLength);
             for (jsize i = 0; i < arrayLength; i++) {
                 jobject element = env->GetObjectArrayElement(stuffNames, i);
 //                if (element != nullptr && env->IsInstanceOf(element, env->FindClass("java/lang/String"))) {
@@ -299,6 +301,8 @@ Java_com_tencent_yolov8ncnn_Yolov8Ncnn_getSeeStuff(JNIEnv *env, jobject thiz) {
         env->SetFloatField(jObj, hId, objects[i].rect.height);
         env->SetIntField(jObj, labelId, objects[i].label);
         env->SetFloatField(jObj, probId, objects[i].prob);
+        jstring jName = env->NewStringUTF(cppStrings[i]);
+        env->SetObjectField(jObj,nameId,jName);
         env->SetObjectArrayElement(jObjArray, i, jObj);
     }
     return jObjArray;

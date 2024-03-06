@@ -10,6 +10,8 @@ public class YoloModel {
     public int label;
     public float prob;
 
+    public String name;
+
     @Override
     public String toString() {
         return "YoloModel{" +
@@ -19,6 +21,7 @@ public class YoloModel {
                 ", h=" + h +
                 ", label=" + label +
                 ", prob=" + prob +
+                ", name=" + name +
                 '}';
     }
 }
