@@ -297,17 +297,17 @@ JNIEXPORT jobjectArray JNICALL
 Java_com_tencent_yolov8ncnn_Yolov8Ncnn_getSeeStuff(JNIEnv *env, jobject thiz) {
     // 在detectPicture方法中将结果保存在了 objects 中，还需继续对他进行转换
     jobjectArray jObjArray = env->NewObjectArray(objects.size(), yoloJavaCls, NULL);
-    jobject jObj = env->NewObject(yoloJavaCls, constructortorId, thiz);
-
     for (size_t i = 0; i < objects.size(); i++) {
+        jobject jObj = env->NewObject(yoloJavaCls, constructortorId, thiz);
         env->SetFloatField(jObj, xId, objects[i].rect.x);
         env->SetFloatField(jObj, yId, objects[i].rect.y);
         env->SetFloatField(jObj, wId, objects[i].rect.width);
         env->SetFloatField(jObj, hId, objects[i].rect.height);
-        env->SetIntField(jObj, labelId, objects[i].label);
+        int label = objects[i].label;
+        env->SetIntField(jObj, labelId, label);
         env->SetFloatField(jObj, probId, objects[i].prob);
         env->SetFloatField(jObj, curFpsId, avg_fps);
-        jstring jName = env->NewStringUTF(cppStrings[i]);
+        jstring jName = env->NewStringUTF(cppStrings[label]);
         env->SetObjectField(jObj,nameId,jName);
         env->SetObjectArrayElement(jObjArray, i, jObj);
     }
