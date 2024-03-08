@@ -2,11 +2,101 @@
 <resources>
     <string name="app_name">ncnn-yolov8</string>
     <string-array name="model_array">
-        <item>nanjing0304</item>
+        <item>nanjing0308</item>
         <item>yolov8n</item>
     </string-array>
     <string-array name="cpugpu_array">
         <item>CPU</item>
         <item>GPU</item>
+    </string-array>
+<!--  0: 活动扳手
+  1: 视频记录仪
+  2: 手机
+  3: 尖嘴钳
+  4: 微波场强仪
+  5: 油壶
+  6: 口笛
+  7: 呆扳手
+  8: 螺丝刀
+  9: 磁钢安装尺
+  10: 组合L型内六角扳手
+  11: 对光架
+  12: 36mm呆扳手
+  13: 激光瞄准器
+  14: 开箱专用钥匙
+  15: 卷尺
+  16: 双面警示器
+  17: 毛刷
+  18: 黑体
+  19: 手红旗
+  20: 6mmL型内六角扳手
+  21: 铜导线
+  22: 14mm呆扳手
+  23: 8mmL型内六角扳手
+  24: T型套筒
+  25: 十字螺丝刀
+  26: 对讲机
+  27: 万用表
+  28: 液晶显示仪
+  29: 圆疙瘩
+  30: 饮料瓶
+  31: 弯弯
+  32: 辅助电机
+  33: 包
+  34: 灭火器
+  35: 喷壶
+  36: 三角套筒扳手
+  37: 铁棒
+  38: 扳手
+  39: 钥匙
+  40: 黑垫子
+  41: 水壶
+  42: 振电器
+  43: 纸盒装-->
+    <string-array name="stuff_array">
+        <item>0:huo dong ban shou</item>
+        <item>1:shi pin ji lu yi</item>
+        <item>2:shou ji</item>
+        <item>3:jian zui qian</item>
+        <item>4:wei bo chang qiang yi</item>
+        <item>5:you hu</item>
+        <item>6:kou di</item>
+        <item>7:dai ban shou</item>
+        <item>8:luo si dao</item>
+        <item>9:ci gang an zhuang chi</item>
+        <item>10:zu he L xing nei liu jiao ban shou </item>
+        <item>11:dui guang jia</item>
+        <item>12:36mm dai ban shou</item>
+        <item>13:ji guang miao zhun qi</item>
+        <item>14:kai xiang zhuan yong yao shi</item>
+        <item>15:juan chi</item>
+        <item>16:shuang mian jiang shi qi</item>
+        <item>17:mao shua</item>
+        <item>18:hei ti</item>
+        <item>19:shou hong qi</item>
+        <item>20:6mmL xing nei liu jiao ban shou</item>
+        <item>21:tong dao xian</item>
+        <item>22:14mm dai ban shou</item>
+        <item>23:8mmL xing nei liu jiao ban shou</item>
+        <item>24:T xing tao tong</item>
+        <item>25:shi zi luo si dao</item>
+        <item>26:dui jiang ji</item>
+        <item>27:wan yong biao</item>
+        <item>28:ye jing xian shi qi</item>
+        <item>29:yuan ge da</item>
+        <item>30:yin liao ping</item>
+        <item>31:wan wan</item>
+        <item>32:fu zhu dian ji</item>
+        <item>33:bao</item>
+        <item>34:mie huo qi</item>
+        <item>35:pen hu</item>
+        <item>36:san jiao tao tong ban shou</item>
+        <item>37:tie bang</item>
+        <item>38:ban shou</item>
+        <item>39:yaoshi</item>
+        <item>40:hei dian zi</item>
+        <item>41:shui hu</item>
+        <item>42:zhen dian qi</item>
+        <item>43:zhi he zhuang</item>
     </string-array>
 </resources>

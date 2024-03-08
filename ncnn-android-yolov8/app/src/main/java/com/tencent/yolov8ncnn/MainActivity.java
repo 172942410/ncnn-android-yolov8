@@ -72,6 +72,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback
                 facing = new_facing;
             }
         });
+        stuffNames = getResources().getStringArray(R.array.stuff_array);
         String [] modelNames = getResources().getStringArray(R.array.model_array);
         currentModel = modelNames[0];
         spinnerModel = (Spinner) findViewById(R.id.spinnerModel);
